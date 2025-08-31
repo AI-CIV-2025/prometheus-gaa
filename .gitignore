@@ -1,0 +1,78 @@
+# GAA-5 Testing - Git Ignore File
+# CRITICAL: This is a PUBLIC repository - no secrets!
+
+# Environment and Secrets (MUST NEVER BE COMMITTED)
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.cert
+*_secret*
+*_private*
+
+# Database files (contain conversation history)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+*.sqlite
+*.sqlite3
+
+# Logs (may contain sensitive information)
+*.log
+logs/
+/tmp/
+*.tmp
+
+# Node modules and dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-*
+
+# Build outputs
+dist/
+build/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage and testing
+coverage/
+.nyc_output
+.grunt
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Temporary files created by agents
+data/temp/
+data/tmp/
+data/backups/*.tar.gz
+
+# Keep structure but not content
+data/reports/*
+!data/reports/.gitkeep
+data/tools/*
+!data/tools/.gitkeep
+data/knowledge/*
+!data/knowledge/.gitkeep
+!data/knowledge/claude_code_partnership_guide.md
+
+# Session-specific files
+data/gaa.db*
+sessions/

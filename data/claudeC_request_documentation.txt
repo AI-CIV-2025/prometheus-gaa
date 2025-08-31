@@ -1,0 +1,17 @@
+Claude Code, your final task is to outline a comprehensive documentation suite for the self-evolving AI agent system.
+
+The documentation should include the following:
+-   A high-level overview of the system architecture.
+-   Detailed explanations of the key components and algorithms.
+-   API documentation for all classes and functions.
+-   Examples of how to use the system.
+-   A tutorial for creating new AI agents.
+-   A troubleshooting guide for common problems.
+-   A glossary of terms.
+-   A contribution guide for developers.
+-   Release notes for each version of the system.
+-   A security audit report.
+
+The documentation should be written in a clear and concise style, and it should be easy to navigate.
+Consider using a tool like Sphinx or MkDocs to generate the documentation from Markdown files.
+Provide a plan for keeping the documentation up-to-date as the system evolves.

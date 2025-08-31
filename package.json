@@ -1,0 +1,20 @@
+{
+  "name": "gaa-5-testing",
+  "version": "5.0.0",
+  "description": "GAA-5.0 Testing Environment - Autonomous Agent System",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "better-sqlite3": "^8.3.0",
+    "fs-extra": "^11.1.1",
+    "js-yaml": "^4.1.0"
+  },
+  "keywords": ["autonomous", "agent", "ai"],
+  "author": "",
+  "license": "MIT"
+}

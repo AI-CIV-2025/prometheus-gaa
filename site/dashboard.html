@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GAA-4.0 Enhanced Dashboard</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            overflow-y: auto; /* Allow page scrolling */
+            font-size: 16px; /* Much larger base font size */
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;  /* Equal thirds */
+            grid-template-rows: 60px 1fr;
+            min-height: 100vh; /* Allow growth */
+            gap: 1px;
+            background: #30363d;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            background: #161b22;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            border-bottom: 2px solid #30363d;
+        }
+        
+        .header h1 {
+            color: #58a6ff;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-indicators {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .indicator-light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3fb950;
+            animation: pulse 2s infinite;
+        }
+        
+        .indicator-light.inactive {
+            background: #6e7681;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .panel {
+            background: #0d1117;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-header {
+            background: #161b22;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #30363d;
+            font-weight: bold;
+            color: #58a6ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.4rem;
+        }
+        
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        /* Reflections Panel */
+        .reflections-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .reflection-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            /* Allow full height for complete content */
+            min-height: auto;
+            max-height: none;
+        }
+        
+        .reflection-item:hover {
+            border-color: #58a6ff;
+            background: #1c2128;
+        }
+        
+        .reflection-item.active {
+            border-color: #58a6ff;
+            background: #1c2128;
+        }
+        
+        .reflection-time {
+            font-size: 1.1rem;
+            color: #6e7681;
+            margin-bottom: 0.25rem;
+        }
+        
+        .reflection-preview {
+            color: #c9d1d9;
+            font-size: 1.2rem;
+            /* REMOVED truncation styles - show everything! */
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .conversation-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .message {
+            padding: 0.75rem;
+            border-radius: 6px;
+            max-width: 80%;
+            word-wrap: break-word;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            color: #c9d1d9;
+            position: relative;
+        }
+        
+        .message.human {
+            background: #1f6feb;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .message.agent {
+            background: #161b22;
+            border: 1px solid #30363d;
+            align-self: flex-start;
+        }
+        
+        .message-time {
+            font-size: 1rem;
+            color: #8b949e;
+            margin-top: 0.25rem;
+        }
+        
+        .input-area {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem;
+        }
+        
+        .input-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .message-input {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: inherit;
+            resize: none;
+        }
+        
+        .send-button {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        .send-button:hover {
+            background: #2ea043;
+        }
+        
+        /* Activity Feed */
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .activity-item {
+            background: #161b22;
+            border-left: 3px solid #30363d;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .activity-item.info { border-left-color: #58a6ff; }
+        .activity-item.success { border-left-color: #3fb950; }
+        .activity-item.warning { border-left-color: #d29922; }
+        .activity-item.error { border-left-color: #f85149; }
+        
+        .activity-time {
+            color: #6e7681;
+            font-size: 1rem;
+        }
+        
+        .activity-agent {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        
+        .activity-action {
+            color: #c9d1d9;
+            margin: 0.25rem 0;
+        }
+        
+        .activity-details {
+            color: #8b949e;
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+        
+        /* Reflection Display */
+        .reflection-display {
+            background: #0d1117;
+            border-top: 1px solid #30363d;
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        .reflection-content {
+            padding: 1rem;
+            white-space: pre-wrap;
+            font-family: inherit;
+            line-height: 1.5;
+            color: #c9d1d9;
+        }
+        
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #161b22;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 GAA-4.0 Testing Dashboard</h1>
+            <div class="status-indicators">
+                <div class="indicator">
+                    <div class="indicator-light" id="status-light"></div>
+                    <span id="status-text">Connecting...</span>
+                </div>
+                <div class="indicator">
+                    <span>Loop #</span>
+                    <strong id="loop-counter">0</strong>
+                </div>
+                <div class="indicator">
+                    <span>Missions:</span>
+                    <strong id="mission-counter">0</strong>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Left Panel: Reflections History -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>📝 Reflections History</span>
+                <span id="reflection-count">0</span>
+            </div>
+            <div class="panel-content">
+                <div class="reflections-list" id="reflections-list"></div>
+            </div>
+        </div>
+        
+        <!-- Middle Column: Agent Communications -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>🤖 Agent Communications</span>
+                <span id="activity-count">Last 100</span>
+            </div>
+            <div class="panel-content">
+                <div class="activity-feed" id="activity-feed"></div>
+            </div>
+        </div>
+        
+        <!-- Right Column: Human Conversation & Current Reflection -->
+        <div class="panel main-content">
+            <!-- Human Conversation Area -->
+            <div class="conversation-area">
+                <div class="panel-header">
+                    <span>💬 Human Conversation</span>
+                    <span id="message-count">0 messages</span>
+                </div>
+                <div class="input-area">
+                    <form class="input-form" id="message-form">
+                        <textarea 
+                            class="message-input" 
+                            id="message-input"
+                            placeholder="Type your message to the agent..."
+                            rows="2"
+                            required
+                        ></textarea>
+                        <button type="submit" class="send-button">Send</button>
+                    </form>
+                </div>
+                <div class="messages-container" id="messages-container"></div>
+            </div>
+            
+            <!-- Current Reflection Display -->
+            <div class="reflection-display">
+                <div class="panel-header">
+                    <span>🔍 Current Reflection</span>
+                </div>
+                <div class="reflection-content" id="current-reflection">
+                    Select a reflection from the history to view details
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // State management
+        let eventSource = null;
+        let currentReflectionId = null;
+        const maxActivities = 100;
+        const maxMessages = 50;
+        
+        // Initialize SSE connection
+        function connectSSE() {
+            eventSource = new EventSource('/events');
+            
+            eventSource.onopen = () => {
+                updateStatus('Connected', true);
+            };
+            
+            eventSource.onerror = () => {
+                updateStatus('Disconnected', false);
+                setTimeout(connectSSE, 5000); // Retry after 5 seconds
+            };
+            
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleSSEMessage(data);
+            };
+        }
+        
+        // Handle SSE messages
+        function handleSSEMessage(data) {
+            switch(data.type) {
+                case 'connected':
+                    updateStatus('Connected', true);
+                    loadInitialData();
+                    break;
+                case 'activity':
+                    addActivity(data.data);
+                    break;
+                case 'message':
+                    addMessage(data.data);
+                    break;
+                case 'heartbeat':
+                    // Keep connection alive
+                    break;
+            }
+        }
+        
+        // Update status indicator
+        function updateStatus(text, active) {
+            document.getElementById('status-text').textContent = text;
+            document.getElementById('status-light').className = 
+                active ? 'indicator-light' : 'indicator-light inactive';
+        }
+        
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                // Load status
+                const statusRes = await fetch('/api/status');
+                const status = await statusRes.json();
+                document.getElementById('loop-counter').textContent = status.loopNumber;
+                document.getElementById('mission-counter').textContent = status.activeMissions;
+                
+                // Load reflections
+                const reflectionsRes = await fetch('/api/reflections');
+                const reflections = await reflectionsRes.json();
+                displayReflections(reflections);
+                
+                // Load messages
+                const messagesRes = await fetch('/api/messages');
+                const messages = await messagesRes.json();
+                displayMessages(messages);
+                
+                // Load activities
+                const activitiesRes = await fetch('/api/activities');
+                const activities = await activitiesRes.json();
+                displayActivities(activities);
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+            }
+        }
+        
+        // Display reflections
+        function displayReflections(reflections) {
+            const container = document.getElementById('reflections-list');
+            container.innerHTML = '';
+            
+            reflections.forEach(reflection => {
+                const item = document.createElement('div');
+                item.className = 'reflection-item';
+                item.onclick = () => selectReflection(reflection);
+                
+                const time = new Date(reflection.created_at || reflection.id).toLocaleString();
+                // Show FULL reflection, no truncation
+                const fullContent = reflection.reflection_md || 'No content';
+                
+                item.innerHTML = `
+                    <div class="reflection-time">${time}</div>
+                    <div class="reflection-preview" style="white-space: pre-wrap; word-break: break-word;">
+                        ${fullContent.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+            
+            document.getElementById('reflection-count').textContent = reflections.length;
+        }
+        
+        // Select and display a reflection
+        function selectReflection(reflection) {
+            currentReflectionId = reflection.id;
+            
+            // Update active state
+            document.querySelectorAll('.reflection-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Display content
+            document.getElementById('current-reflection').textContent = 
+                reflection.reflection_md || 'No content available';
+        }
+        
+        // Display messages
+        function displayMessages(messages) {
+            const container = document.getElementById('messages-container');
+            container.innerHTML = '';
+            
+            console.log('Displaying messages:', messages); // Debug log
+            
+            // Display messages in chronological order (oldest first)
+            messages.forEach(msg => {
+                addMessageToDOM(msg, false);  // false = don't prepend
+            });
+            
+            document.getElementById('message-count').textContent = `${messages.length} messages`;
+        }
+        
+        // Add message to DOM
+        function addMessageToDOM(msg, prepend = true) {
+            const container = document.getElementById('messages-container');
+            if (!container) {
+                console.error('Messages container not found!');
+                return;
+            }
+            
+            console.log('Adding message to DOM:', msg); // Debug log
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${msg.source}`;
+            
+            const time = new Date(msg.created_at).toLocaleTimeString();
+            
+            // Create message content
+            const contentDiv = document.createElement('div');
+            contentDiv.textContent = msg.content; // Use textContent for safety
+            msgDiv.appendChild(contentDiv);
+            
+            // Add timestamp
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = time;
+            msgDiv.appendChild(timeDiv);
+            
+            if (prepend) {
+                container.insertBefore(msgDiv, container.firstChild);
+            } else {
+                container.appendChild(msgDiv);
+            }
+            
+            // Limit messages
+            while (container.children.length > maxMessages) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        // Add new message from SSE
+        function addMessage(msg) {
+            addMessageToDOM(msg, true);  // true = prepend for new messages
+            const count = document.getElementById('messages-container').children.length;
+            document.getElementById('message-count').textContent = `${count} messages`;
+        }
+        
+        // Display activities
+        function displayActivities(activities) {
+            const container = document.getElementById('activity-feed');
+            container.innerHTML = '';
+            
+            activities.slice(0, maxActivities).forEach(activity => {
+                addActivityToDOM(activity);
+            });
+            
+            document.getElementById('activity-count').textContent = `Last ${Math.min(activities.length, maxActivities)}`;
+        }
+        
+        // Add activity to DOM
+        function addActivityToDOM(activity) {
+            const container = document.getElementById('activity-feed');
+            const actDiv = document.createElement('div');
+            actDiv.className = `activity-item ${activity.level || 'info'}`;
+            
+            const time = new Date(activity.timestamp).toLocaleTimeString();
+            let details = '';
+            if (activity.details && activity.details !== 'null') {
+                try {
+                    const parsed = typeof activity.details === 'string' ? 
+                        JSON.parse(activity.details) : activity.details;
+                    
+                    // Create FULL detailed preview for each agent
+                    let preview = '';
+                    
+                    // PLANNER AGENT
+                    if (activity.agent === 'PlannerAgent' && (activity.action === 'Plan generated' || activity.action === 'Plan details')) {
+                        const fullPlan = parsed.spec_md || parsed.spec_preview || 'No plan content';
+                        const steps = parsed.steps || [];
+                        let stepsDisplay = '';
+                        if (steps.length > 0) {
+                            stepsDisplay = '<br><strong>Steps:</strong><ul style="margin:8px 0;padding-left:20px">';
+                            steps.forEach((step, idx) => {
+                                stepsDisplay += `<li><strong>${idx + 1}. ${step.title || 'Step'}</strong><br>
+                                    <code style="background:#010409;padding:4px;display:block;margin:4px 0;font-size:1.1em">${step.bash || step.command || ''}</code></li>`;
+                            });
+                            stepsDisplay += '</ul>';
+                        }
+                        preview = `<strong style="color:#58a6ff">📋 PLANNER AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px;max-height:600px;overflow-y:auto">
+<strong>Full Plan:</strong><br>
+<div style="white-space:pre-wrap;font-family:monospace;font-size:1.15em;margin:8px 0">${fullPlan}</div>
+${stepsDisplay}
+<br><strong>Total Steps:</strong> ${steps.length}
+</div>`;
+                    }
+                    // REVIEWER AGENT 
+                    else if (activity.agent === 'ReviewerAgent' && activity.action === 'Review complete') {
+                        const color = parsed.approved > 0 ? '#3fb950' : '#f85149';
+                        const icon = parsed.approved > 0 ? '✅' : '❌';
+                        const summary = parsed.summary || parsed.summary_md || '';
+                        preview = `<strong style="color:${color}">${icon} REVIEWER AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px">
+<strong>Approved:</strong> ${parsed.approved || 0} steps<br>
+<strong>Rejected:</strong> ${parsed.rejected || 0} steps<br>
+<strong>Review Summary:</strong><br>
+<div style="white-space:pre-wrap;margin-top:8px">${summary}</div>
+</div>`;
+                    }
+                    // EXECUTOR AGENT
+                    else if (activity.agent === 'ExecutorAgent') {
+                        if (activity.action === 'Execution complete') {
+                            const successList = parsed.success || [];
+                            const failedList = parsed.failed || [];
+                            const successCount = Array.isArray(successList) ? successList.length : 0;
+                            const failedCount = Array.isArray(failedList) ? failedList.length : 0;
+                            const icon = successCount > 0 ? '✅' : '❌';
+                            const color = successCount > 0 ? '#3fb950' : '#f85149';
+                            const report = parsed.final_report_md || parsed.report || '';
+                            
+                            let failureDetails = '';
+                            if (Array.isArray(failedList) && failedList.length > 0) {
+                                failureDetails = '<br><strong>Failed Steps:</strong><ul style="margin:8px 0;padding-left:20px">';
+                                failedList.forEach(f => {
+                                    failureDetails += `<li><strong>${f.title || 'Unknown'}</strong><br>
+                                        <code style="color:#f85149;background:#161b22;padding:4px;display:block;margin:4px 0;font-size:1.1em">${f.stderr || f.error || 'Unknown error'}</code></li>`;
+                                });
+                                failureDetails += '</ul>';
+                            }
+                            
+                            let successDetails = '';
+                            if (Array.isArray(successList) && successList.length > 0) {
+                                successDetails = '<br><strong>Successful Steps:</strong><ul style="margin:8px 0;padding-left:20px">';
+                                successList.forEach(s => {
+                                    const output = s.stdout || s.output || '';
+                                    successDetails += `<li><strong>${s.title || 'Step'}</strong>`;
+                                    if (output) {
+                                        successDetails += `<br><code style="background:#161b22;padding:4px;display:block;margin:4px 0;font-size:1.1em">${output.substring(0, 200)}${output.length > 200 ? '...' : ''}</code>`;
+                                    }
+                                    successDetails += '</li>';
+                                });
+                                successDetails += '</ul>';
+                            }
+                            
+                            preview = `<strong style="color:${color}">${icon} EXECUTOR AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px;max-height:600px;overflow-y:auto">
+<strong>Results:</strong> ${successCount} succeeded, ${failedCount} failed
+${successDetails}
+${failureDetails}
+${report ? `<br><strong>Full Execution Report:</strong><br><div style="white-space:pre-wrap;margin-top:8px;background:#010409;padding:8px;border-radius:4px;font-size:1.1em;max-height:400px;overflow-y:auto">${report}</div>` : ''}
+</div>`;
+                        } else if (activity.action === 'Executing steps') {
+                            preview = `<strong style="color:#58a6ff">⚙️ EXECUTOR: Running ${parsed.count || 0} steps...</strong>`;
+                        }
+                    }
+                    // REFLECTOR AGENT
+                    else if (activity.agent === 'ReflectorAgent' && activity.action === 'Reflection complete') {
+                        const reflection = parsed.reflection || parsed.reflection_md || 'N/A';
+                        preview = `<strong style="color:#d29922">💭 REFLECTOR AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px">
+<div style="white-space:pre-wrap;font-style:italic">${reflection.replace(/\n/g, '<br>')}</div>
+</div>`;
+                    }
+                    // MEMORY AGENT
+                    else if (activity.agent === 'MemoryAgent') {
+                        const memories = parsed.memories || parsed.count || 0;
+                        preview = `<strong style="color:#8b949e">🧠 MEMORY AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px">
+<strong>Action:</strong> ${activity.action}<br>
+${parsed.compressed ? `<strong>Compressed:</strong> ${parsed.compressed} memories<br>` : ''}
+${parsed.lesson ? `<strong>Lesson Learned:</strong><br>${parsed.lesson}` : ''}
+</div>`;
+                    }
+                    // SYSTEM AGENT
+                    else if (activity.agent === 'SystemAgent') {
+                        const diagnosis = parsed.diagnosis || '';
+                        const patch = parsed.patch || '';
+                        preview = `<strong style="color:#f85149">🔧 SYSTEM AGENT OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px">
+<strong>Action:</strong> ${activity.action}<br>
+${diagnosis ? `<strong>Diagnosis:</strong><br><div style="white-space:pre-wrap">${diagnosis}</div>` : ''}
+${patch ? `<strong>Patch Applied:</strong><br><code style="white-space:pre-wrap">${JSON.stringify(patch, null, 2)}</code>` : ''}
+</div>`;
+                    }
+                    // CONTEXT BUILDER
+                    else if (activity.agent === 'ContextBuilder') {
+                        const mission = parsed.mission || '';
+                        preview = `<strong style="color:#8957e5">📝 CONTEXT BUILDER OUTPUT</strong><br>
+<div style="background:#1c2128;padding:10px;border-radius:6px;margin-top:8px">
+<strong>Mission:</strong> ${mission}<br>
+${parsed.context ? `<strong>Context Length:</strong> ${parsed.context.length} chars` : ''}
+</div>`;
+                    }
+                    // DEFAULT: Try the previous logic
+                    else if (activity.action === 'Plan generated' || activity.action === 'Plan details') {
+                        preview = `<strong style="color:#58a6ff">📋 PLAN GENERATED</strong><br>
+<strong>Preview:</strong> ${parsed.spec_preview || 'N/A'}<br>
+<strong>Steps:</strong> ${parsed.steps || 0}`;
+                    } else if (activity.action === 'Review complete') {
+                        const color = parsed.approved > 0 ? '#3fb950' : '#f85149';
+                        const icon = parsed.approved > 0 ? '✅' : '❌';
+                        preview = `<strong style="color:${color}">${icon} REVIEW: ${parsed.approved || 0}/${parsed.total || '?'} steps approved</strong>`;
+                    } else if (activity.action === 'Reflection complete') {
+                        const reflection = parsed.reflection || 'N/A';
+                        preview = `<strong style="color:#d29922">💭 REFLECTION:</strong><br><div style="padding:8px;background:#1c2128;border-radius:4px;margin-top:4px">${reflection.replace(/\n/g, '<br>')}</div>`;
+                    } else if (activity.action === 'Execution complete') {
+                        const successCount = Array.isArray(parsed.success) ? parsed.success.length : (parsed.success || 0);
+                        const failedCount = Array.isArray(parsed.failed) ? parsed.failed.length : (parsed.failed || 0);
+                        const icon = successCount > 0 ? '✅' : '❌';
+                        const color = successCount > 0 ? '#3fb950' : '#f85149';
+                        let detailsStr = '';
+                        if (parsed.failed && Array.isArray(parsed.failed) && parsed.failed.length > 0) {
+                            detailsStr = '<br>Failed: ' + parsed.failed.map(f => f.title || 'Unknown').join(', ');
+                        }
+                        preview = `<strong style="color:${color}">${icon} EXECUTION: ${successCount} succeeded, ${failedCount} failed</strong>${detailsStr}`;
+                    } else if (activity.action === 'Executing steps') {
+                        preview = `<strong style="color:#58a6ff">⚙️ EXECUTING ${parsed.count || 0} STEPS</strong>`;
+                    } else if (activity.action && activity.action.includes('Execution Report')) {
+                        // Full execution report with details
+                        preview = `<strong style="color:#58a6ff">📊 EXECUTION REPORT</strong><br>
+<div style="background:#1c2128;padding:8px;border-radius:4px;margin-top:4px;max-height:400px;overflow-y:auto">
+${parsed.report || parsed.details || JSON.stringify(parsed, null, 2)}
+</div>`;
+                    } else if (activity.action === 'Loop started') {
+                        preview = `<strong style="color:#58a6ff">🚀 LOOP #${parsed.loopNumber} STARTED</strong>`;
+                    } else if (activity.action === 'Loop completed successfully') {
+                        preview = `<strong style="color:#3fb950">✅ LOOP COMPLETED</strong>`;
+                    } else if (activity.action === 'Responding to human') {
+                        preview = `<strong style="color:#1f6feb">💬 TO HUMAN:</strong><br>${parsed.response || 'N/A'}`;
+                    } else if (activity.action.includes('failed')) {
+                        preview = `<strong style="color:#f85149">❌ ERROR:</strong><br><code style="background:#161b22;padding:4px;border-radius:3px">${parsed.error || activity.action}</code>`;
+                    } else if (parsed.response || parsed.reflection || parsed.spec_preview || parsed.error || parsed.mission || parsed.steps || parsed.output || parsed.stdout || parsed.stderr) {
+                        // Show any available content with proper formatting
+                        let content = '';
+                        if (parsed.output || parsed.stdout) {
+                            content = `<strong>OUTPUT:</strong><br><code style="display:block;background:#010409;padding:8px;margin:4px 0;border-radius:4px;white-space:pre-wrap">${parsed.output || parsed.stdout}</code>`;
+                        }
+                        if (parsed.stderr) {
+                            content += `<strong style="color:#f85149">ERROR:</strong><br><code style="display:block;background:#010409;padding:8px;margin:4px 0;border-radius:4px;white-space:pre-wrap">${parsed.stderr}</code>`;
+                        }
+                        if (!content) {
+                            content = parsed.response || parsed.reflection || parsed.spec_preview || parsed.error || parsed.mission || JSON.stringify(parsed, null, 2);
+                        }
+                        preview = `<div style="background:#161b22;padding:8px;border-radius:4px;font-size:1.1em;max-height:300px;overflow-y:auto">${content}</div>`;
+                    } else {
+                        // Default: show all available data in a readable format
+                        preview = `<strong style="color:#8b949e">${activity.agent.toUpperCase()} OUTPUT</strong><br>
+<pre style="background:#161b22;padding:8px;border-radius:4px;font-size:1.1em;overflow-x:auto;max-height:400px;white-space:pre-wrap">${JSON.stringify(parsed, null, 2)}</pre>`;
+                    }
+                    
+                    details = `<div class="activity-details" style="white-space: pre-wrap; max-height: 600px; overflow-y: auto;">${preview}</div>`;
+                } catch (e) {
+                    // Show full raw details if we can't parse
+                    details = `<div class="activity-details"><strong>Raw Output:</strong><br><pre style="background:#161b22;padding:8px;border-radius:4px;font-size:1.1em;white-space:pre-wrap;max-height:400px;overflow-y:auto">${activity.details}</pre></div>`;
+                }
+            }
+            
+            actDiv.innerHTML = `
+                <span class="activity-time">${time}</span>
+                <span class="activity-agent">[${activity.agent}]</span>
+                <div class="activity-action">${activity.action}</div>
+                ${details}
+            `;
+            
+            container.insertBefore(actDiv, container.firstChild);
+            
+            // Limit activities
+            while (container.children.length > maxActivities) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        // Add new activity from SSE
+        function addActivity(activity) {
+            addActivityToDOM(activity);
+            const count = Math.min(
+                document.getElementById('activity-feed').children.length,
+                maxActivities
+            );
+            document.getElementById('activity-count').textContent = `Last ${count}`;
+            
+            // Update loop counter if it's a loop start
+            if (activity.action === 'Loop started') {
+                const details = typeof activity.details === 'string' ? 
+                    JSON.parse(activity.details) : activity.details;
+                if (details?.loopNumber) {
+                    document.getElementById('loop-counter').textContent = details.loopNumber;
+                }
+            }
+            
+            // Update status for key events
+            if (activity.action === 'Loop completed successfully' || 
+                activity.action === 'Reflection complete' ||
+                activity.agent === 'ReflectorAgent') {
+                // Refresh reflections immediately when relevant
+                setTimeout(refreshReflections, 500);
+            }
+        }
+        
+        // Handle message form submission
+        document.getElementById('message-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            
+            if (!content) return;
+            
+            try {
+                await fetch('/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                // Clear input
+                input.value = '';
+                
+                // Don't add message here - let it come via SSE to avoid duplicates
+                // The server will broadcast it back to us
+            } catch (error) {
+                console.error('Failed to send message:', error);
+            }
+        });
+        
+        // Auto-refresh status periodically (but not reflections - handled separately)
+        setInterval(async () => {
+            try {
+                const statusRes = await fetch('/api/status');
+                const status = await statusRes.json();
+                document.getElementById('loop-counter').textContent = status.loopNumber;
+                document.getElementById('mission-counter').textContent = status.activeMissions;
+            } catch (error) {
+                console.error('Failed to refresh status:', error);
+            }
+        }, 3000);
+        
+        // Periodic refresh for reflections
+        async function refreshReflections() {
+            try {
+                const reflectionsRes = await fetch('/api/reflections');
+                const reflections = await reflectionsRes.json();
+                displayReflections(reflections);
+                console.log('Refreshed reflections:', reflections.length);
+            } catch (error) {
+                console.error('Failed to refresh reflections:', error);
+            }
+        }
+        
+        // Initialize on load
+        connectSSE();
+        
+        // Refresh reflections every 5 seconds
+        setInterval(refreshReflections, 5000);
+        
+        // Also refresh immediately
+        refreshReflections();
+    </script>
+</body>
+</html>

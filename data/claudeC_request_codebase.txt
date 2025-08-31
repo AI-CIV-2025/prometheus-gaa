@@ -1,0 +1,19 @@
+As Claude Code, you are now tasked with creating a multi-file codebase outline for the self-evolving AI agent system described in the architecture document.
+
+The codebase should include the following files:
+-   `main.py`: The main entry point of the system.
+-   `agent.py`: The base class for all AI agents.
+-   `environment.py`: The class representing the environment in which the agents operate.
+-   `knowledge_base.py`: The class for managing the agent's knowledge base.
+-   `learning.py`: The module containing the learning algorithms.
+-   `communication.py`: The module for handling communication between agents.
+-   `monitoring.py`: The module for monitoring the system's performance.
+-   `config.json`: The configuration file for the system.
+-   `README.md`: A description of the system and instructions for running it.
+-   `tests/test_agent.py`: Unit tests for the `agent.py` file.
+-   `docs/architecture.md`: Architecture documentation.
+-   `docs/api.md`: API documentation.
+
+For each file, provide a brief description of its purpose and the key classes and functions it contains.
+Focus on the structure and organization of the codebase, rather than the specific implementation details.
+Describe the dependencies between the files and how they interact with each other.

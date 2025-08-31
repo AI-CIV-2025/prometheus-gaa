@@ -1,0 +1,21 @@
+You are Claude Code, a world-class AI architect. I need your help designing a self-evolving AI agent system.
+The system should be capable of:
+1.  Learning from its environment and improving its performance over time.
+2.  Adapting to new tasks and challenges without explicit reprogramming.
+3.  Maintaining a knowledge base of its past experiences and using it to make better decisions.
+4.  Communicating and collaborating with other AI agents.
+5.  Continuously monitoring its own performance and identifying areas for improvement.
+
+Please provide a detailed system architecture, including:
+-   The key components of the system and their roles.
+-   The data flow between the components.
+-   The algorithms and techniques used for learning, adaptation, and knowledge management.
+-   The communication protocols used for interacting with other agents.
+-   The monitoring and evaluation mechanisms used to track performance.
+-   A security model to prevent malicious use and unintended consequences.
+
+The system should be designed to be scalable, robust, and efficient.
+Consider using a modular design to allow for easy extension and modification.
+
+Please provide a clear and concise explanation of the design choices and trade-offs.
+Include diagrams and illustrations to help visualize the architecture.
