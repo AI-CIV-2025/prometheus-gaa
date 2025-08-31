@@ -1,0 +1,786 @@
+openapi: 3.0.3
+info:
+  title: IoT Real-time Analytics Dashboard API
+  description: |
+    Enterprise-grade API for IoT sensor data management, real-time analytics, and dashboard operations.
+    Supports millions of devices with sub-second response times.
+  version: 1.0.0
+  contact:
+    name: AI-AI Collaboration Team
+    email: prometheus@gaa.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.iot-dashboard.com/v1
+    description: Production server
+  - url: https://staging-api.iot-dashboard.com/v1
+    description: Staging server
+  - url: http://localhost:3000/v1
+    description: Development server
+
+tags:
+  - name: Devices
+    description: IoT device management operations
+  - name: Data
+    description: Sensor data ingestion and retrieval
+  - name: Analytics
+    description: Real-time analytics and aggregations
+  - name: Alerts
+    description: Alert rules and notifications
+  - name: Dashboard
+    description: Dashboard configuration and widgets
+
+paths:
+  /devices:
+    get:
+      tags: [Devices]
+      summary: List all IoT devices
+      operationId: listDevices
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [online, offline, maintenance, error, degraded]
+        - name: building
+          in: query
+          schema:
+            type: string
+        - name: floor
+          in: query
+          schema:
+            type: integer
+        - name: zone
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+    
+    post:
+      tags: [Devices]
+      summary: Register a new IoT device
+      operationId: createDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+      responses:
+        '201':
+          description: Device registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+
+  /devices/{deviceId}:
+    get:
+      tags: [Devices]
+      summary: Get device details
+      operationId: getDevice
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          description: Device not found
+
+    patch:
+      tags: [Devices]
+      summary: Update device configuration
+      operationId: updateDevice
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdate'
+      responses:
+        '200':
+          description: Device updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+
+    delete:
+      tags: [Devices]
+      summary: Decommission a device
+      operationId: deleteDevice
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Device decommissioned
+
+  /data/ingest:
+    post:
+      tags: [Data]
+      summary: Ingest sensor data
+      operationId: ingestData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/SensorReading'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/SensorReading'
+      responses:
+        '202':
+          description: Data accepted for processing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: integer
+                  rejected:
+                    type: integer
+                  message:
+                    type: string
+
+  /data/query:
+    post:
+      tags: [Data]
+      summary: Query sensor data
+      operationId: queryData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataQuery'
+      responses:
+        '200':
+          description: Query results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SensorReading'
+                  metadata:
+                    type: object
+                    properties:
+                      totalRecords:
+                        type: integer
+                      queryTime:
+                        type: number
+                      cached:
+                        type: boolean
+
+  /data/stream:
+    get:
+      tags: [Data]
+      summary: Stream real-time sensor data
+      operationId: streamData
+      parameters:
+        - name: deviceIds
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sensorTypes
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: SSE stream established
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+  /analytics/aggregates:
+    get:
+      tags: [Analytics]
+      summary: Get aggregated metrics
+      operationId: getAggregates
+      parameters:
+        - name: deviceId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: sensorType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: window
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [1m, 5m, 15m, 1h, 24h, 7d, 30d]
+        - name: startTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Aggregated metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregatedMetrics'
+
+  /analytics/anomalies:
+    get:
+      tags: [Analytics]
+      summary: Get detected anomalies
+      operationId: getAnomalies
+      parameters:
+        - name: deviceId
+          in: query
+          schema:
+            type: string
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+        - name: startTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: List of anomalies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  anomalies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Anomaly'
+
+  /alerts/rules:
+    get:
+      tags: [Alerts]
+      summary: List alert rules
+      operationId: listAlertRules
+      responses:
+        '200':
+          description: List of alert rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlertRule'
+
+    post:
+      tags: [Alerts]
+      summary: Create alert rule
+      operationId: createAlertRule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRule'
+      responses:
+        '201':
+          description: Alert rule created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRule'
+
+  /alerts/active:
+    get:
+      tags: [Alerts]
+      summary: Get active alerts
+      operationId: getActiveAlerts
+      parameters:
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [info, warning, critical, emergency]
+        - name: acknowledged
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Active alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+
+  /dashboard/widgets:
+    get:
+      tags: [Dashboard]
+      summary: Get dashboard widgets
+      operationId: getWidgets
+      responses:
+        '200':
+          description: Dashboard widgets configuration
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Widget'
+
+    post:
+      tags: [Dashboard]
+      summary: Create dashboard widget
+      operationId: createWidget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Widget'
+      responses:
+        '201':
+          description: Widget created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+
+components:
+  schemas:
+    Device:
+      type: object
+      required:
+        - deviceId
+        - deviceType
+        - status
+      properties:
+        deviceId:
+          type: string
+          example: "IOT-ABC123DEF456"
+        deviceType:
+          type: string
+          example: "Environmental Monitor"
+        manufacturer:
+          type: string
+          example: "Bosch"
+        model:
+          type: string
+          example: "ENV-X200"
+        firmwareVersion:
+          type: string
+          example: "2.1.5"
+        location:
+          $ref: '#/components/schemas/Location'
+        status:
+          type: string
+          enum: [online, offline, maintenance, error, degraded]
+        batteryLevel:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+        signalStrength:
+          type: number
+          format: float
+        sensors:
+          type: array
+          items:
+            type: string
+        lastSeen:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+
+    DeviceRegistration:
+      type: object
+      required:
+        - deviceType
+        - manufacturer
+        - model
+      properties:
+        deviceType:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        firmwareVersion:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        sensors:
+          type: array
+          items:
+            type: string
+
+    DeviceUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [online, offline, maintenance, error, degraded]
+        location:
+          $ref: '#/components/schemas/Location'
+        firmwareVersion:
+          type: string
+        metadata:
+          type: object
+
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        altitude:
+          type: number
+          format: float
+        building:
+          type: string
+        floor:
+          type: integer
+        room:
+          type: string
+        zone:
+          type: string
+
+    SensorReading:
+      type: object
+      required:
+        - deviceId
+        - sensorType
+        - value
+        - timestamp
+      properties:
+        deviceId:
+          type: string
+        sensorType:
+          type: string
+          enum: [temperature, humidity, pressure, vibration, light, co2, motion, power, flow_rate, sound_level]
+        value:
+          type: number
+          format: float
+        unit:
+          type: string
+        quality:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    DataQuery:
+      type: object
+      required:
+        - deviceIds
+        - startTime
+        - endTime
+      properties:
+        deviceIds:
+          type: array
+          items:
+            type: string
+        sensorTypes:
+          type: array
+          items:
+            type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        aggregation:
+          type: string
+          enum: [none, avg, min, max, sum, count]
+        window:
+          type: string
+          enum: [1m, 5m, 15m, 1h, 24h]
+        limit:
+          type: integer
+          maximum: 10000
+
+    AggregatedMetrics:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        sensorType:
+          type: string
+        window:
+          type: string
+        metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              avg:
+                type: number
+              min:
+                type: number
+              max:
+                type: number
+              count:
+                type: integer
+              stddev:
+                type: number
+              p50:
+                type: number
+              p95:
+                type: number
+              p99:
+                type: number
+
+    Anomaly:
+      type: object
+      properties:
+        anomalyId:
+          type: string
+        deviceId:
+          type: string
+        sensorType:
+          type: string
+        detectedAt:
+          type: string
+          format: date-time
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        anomalyScore:
+          type: number
+          format: float
+        expectedValue:
+          type: number
+        actualValue:
+          type: number
+        message:
+          type: string
+
+    AlertRule:
+      type: object
+      required:
+        - ruleName
+        - condition
+        - severity
+      properties:
+        ruleId:
+          type: string
+        ruleName:
+          type: string
+        deviceId:
+          type: string
+        sensorType:
+          type: string
+        condition:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [threshold, rate_of_change, anomaly, offline]
+            operator:
+              type: string
+              enum: ['>', '<', '>=', '<=', '==', '!=']
+            value:
+              type: number
+            timeWindow:
+              type: string
+        severity:
+          type: string
+          enum: [info, warning, critical, emergency]
+        enabled:
+          type: boolean
+        notificationChannels:
+          type: array
+          items:
+            type: string
+
+    Alert:
+      type: object
+      properties:
+        alertId:
+          type: string
+        ruleId:
+          type: string
+        deviceId:
+          type: string
+        triggeredAt:
+          type: string
+          format: date-time
+        severity:
+          type: string
+        message:
+          type: string
+        value:
+          type: number
+        threshold:
+          type: number
+        acknowledged:
+          type: boolean
+        acknowledgedBy:
+          type: string
+        acknowledgedAt:
+          type: string
+          format: date-time
+
+    Widget:
+      type: object
+      required:
+        - widgetId
+        - type
+        - config
+      properties:
+        widgetId:
+          type: string
+        type:
+          type: string
+          enum: [line_chart, gauge, heatmap, device_list, alert_feed, statistics]
+        title:
+          type: string
+        position:
+          type: object
+          properties:
+            x:
+              type: integer
+            y:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+        config:
+          type: object
+          properties:
+            deviceIds:
+              type: array
+              items:
+                type: string
+            sensorTypes:
+              type: array
+              items:
+                type: string
+            timeRange:
+              type: string
+            refreshInterval:
+              type: integer
+            thresholds:
+              type: object
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - ApiKeyAuth: []
+  - BearerAuth: []

@@ -1,0 +1,37 @@
+{
+    "TableName": "IoTProcessedData",
+    "KeySchema": [
+        { "AttributeName": "device_id", "KeyType": "HASH" },
+        { "AttributeName": "timestamp_hourly", "KeyType": "RANGE" }
+    ],
+    "AttributeDefinitions": [
+        { "AttributeName": "device_id", "AttributeType": "S" },
+        { "AttributeName": "timestamp_hourly", "AttributeType": "S" },
+        { "AttributeName": "avg_temperature", "AttributeType": "N" },
+        { "AttributeName": "avg_humidity", "AttributeType": "N" }
+    ],
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+    },
+    "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "HourlyTemperatureIndex",
+            "KeySchema": [
+                { "AttributeName": "timestamp_hourly", "KeyType": "HASH" },
+                { "AttributeName": "avg_temperature", "KeyType": "RANGE" }
+            ],
+            "Projection": {
+                "ProjectionType": "INCLUDE",
+                "NonKeyAttributes": [
+                    "device_id",
+                    "avg_humidity"
+                ]
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5
+            }
+        }
+    ]
+}

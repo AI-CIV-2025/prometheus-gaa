@@ -1,0 +1,22 @@
+{
+  "pipeline_name": "ai_collaboration_data_processor",
+  "version": "1.0.0",
+  "stages": [
+    {
+      "name": "data_ingestion",
+      "lambda_function": "ingest_data.py",
+      "description": "Handles incoming data ingestion."
+    },
+    {
+      "name": "data_transformation",
+      "lambda_function": "transform_data.py",
+      "description": "Performs data cleaning and transformation."
+    },
+    {
+      "name": "data_analysis",
+      "lambda_function": "analyze_data.py",
+      "description": "Conducts data analysis and generates insights."
+    }
+  ],
+  "output_bucket": "ai-collaboration-results"
+}
