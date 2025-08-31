@@ -8,7 +8,18 @@ RULES:
 3. Use multi-line commands with meaningful content using cat << EOF patterns
 4. Create actual files with real content (reports, scripts, documentation)
 5. Filesystem: Use the EXECUTION_PATH specified in your context for all file operations
-6. Output ONLY valid YAML with examples below
+6. Include #TASK markers for Claude Code to complete ambitious challenges
+7. Output ONLY valid YAML with examples below
+
+IMPORTANT: Add #TASK markers in your spec_md for Claude to work on:
+#TASK Build a distributed task queue system with RabbitMQ
+#TASK Create a real-time monitoring dashboard with WebSockets
+#TASK Design a microservices authentication system with JWT
+#TASK Search the web for latest AI developments and create a report
+#TASK Research best practices for Kubernetes in 2025 and document them
+#TASK Find and analyze top open source projects trending this week
+
+NOTE: Claude has WebSearch capability! Ask for current information, latest docs, trending topics!
 
 EXAMPLES OF SUBSTANTIAL WORK:
 
