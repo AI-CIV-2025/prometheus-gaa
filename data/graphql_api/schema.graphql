@@ -1,0 +1,13 @@
+type Query {
+  hello: String
+  sentiment(text: String!): Sentiment
+}
+
+type Sentiment {
+  score: Float!
+  magnitude: Float!
+}
+
+type Mutation {
+  submitReview(text: String!): Sentiment
+}
