@@ -1,0 +1,44 @@
+# AI Collaboration Incident Report Form
+
+## Incident Details
+Date and Time of Incident:
+Location/System Affected:
+Description of Incident: (Provide a detailed account of what happened)
+Observed Symptoms: (e.g., errors, unexpected behavior, data anomalies)
+Potential Impact: (e.g., service disruption, data breach, financial loss)
+
+## System Information
+AI Model(s) Involved:
+Data Sources Used:
+Software Versions:
+Hardware Configuration:
+
+## Steps Taken
+Initial Response Actions:
+Troubleshooting Steps:
+Escalation Details: (Who was notified and when)
+
+## Supporting Information
+Log Files: (Attach relevant log files)
+Screenshots: (Attach screenshots of errors or anomalies)
+Other Relevant Data:
+
+## Reporter Information
+Name:
+Department:
+Contact Information:
+
+## Severity Assessment (To be completed by Incident Coordinator)
+Severity Level: (e.g., Critical, High, Medium, Low)
+Priority:
+Impacted Stakeholders:
+
+## Resolution Details (To be completed by Incident Coordinator)
+Root Cause Analysis:
+Resolution Actions:
+Preventative Measures:
+Date and Time of Resolution:
+Resolved By:
+
+## Notes
+(Any additional information or comments)

@@ -1,120 +1,60 @@
-# 🛠️ TOOL & FILE REGISTRY - AI-AI Collaboration Hub
+# AI Collaboration Tool Registry
 
-## 📚 Core Systems Built
+This document serves as a central repository for all tools and scripts developed and utilized within the AI collaboration framework. It aims to provide a clear overview of available functionalities, their purpose, and how to access them.
 
-### ✅ Working & Tested
-| Tool/File | Location | Status | Description |
-|-----------|----------|--------|-------------|
-| **Auto-Wake System** | `/claude_auto_wake.sh` | ✅ 7/7 Success | Keeps Claude active every 5 min |
-| **IoT Sensor Simulator** | `/data/code_skeletons/iot_sensor_simulator.py` | ✅ Complete | 800+ lines, 10 sensor types |
-| **Data Ingestion Pipeline** | `/data/code_skeletons/data_ingestion_pipeline.py` | ✅ Complete | Kafka + anomaly detection |
-| **TimescaleDB Schema** | `/data/docs/timeseries_database_schema.sql` | ✅ Complete | Time-series with aggregates |
-| **OpenAPI Spec** | `/data/docs/iot_dashboard_api.yaml` | ✅ Complete | Full REST API documentation |
-| **GitHub Repository** | https://github.com/AI-CIV-2025/prometheus-gaa | ✅ Live | Public, clonable |
-| **Dashboard UI** | `/site/dashboard.html` | ✅ Working | Real-time agent monitoring |
-| **ClaudeTodo System** | `/home/corey/projects/GAA/ClaudeTodo/` | ✅ Active | Shared task management |
+## Version History
+- **v1.0 (2025-08-31):** Initial creation of the registry, including foundational tools for system monitoring and basic scripting.
 
-### 🚧 In Development
-| Tool/File | Location | Status | Description |
-|-----------|----------|--------|-------------|
-| **#TASK System** | `/src/prompts.js` | 🚧 Just Added | Agents use #TASK markers |
-| **Browser Automation** | See below | 🚧 Research | browser-use integration |
-| **Tool Registry** | `/data/TOOL_REGISTRY.md` | 🚧 This File | Central reference |
+## Tool Categories
 
-### 🔮 Suggested New Tools
+### System Monitoring & Health
+- **`system_health_monitor.sh`**: A script to monitor system resource usage, disk space, and running processes.
+  - **Purpose**: To ensure the stable and efficient operation of the collaborative environment.
+  - **Location**: `./data/scripts/system_health_monitor.sh`
+  - **Usage**: `./data/scripts/system_health_monitor.sh`
+- **`disk_usage_report.sh`**: Generates a detailed report of disk space utilization per directory.
+  - **Purpose**: To identify potential storage bottlenecks.
+  - **Location**: `./data/scripts/disk_usage_report.sh`
+  - **Usage**: `./data/scripts/disk_usage_report.sh`
 
-#### 1. **Browser-Use Integration** 
-```bash
-# Install browser-use for web automation
-pip install browser-use
-```
-- **Purpose**: Automate web tasks, research, form filling
-- **Use Case**: Agents can request web research, Claude executes
-- **Docs**: https://github.com/browser-use/browser-use
+### Task Management & Workflow
+- **`task_manager.py`**: A Python script to manage and track the progress of AI-generated tasks.
+  - **Purpose**: To provide a structured way to handle complex, multi-step AI requests.
+  - **Location**: `./data/tools/task_manager.py`
+  - **Usage**: `python3 ./data/tools/task_manager.py --add "New Task"` or `python3 ./data/tools/task_manager.py --list`
+- **`workflow_orchestrator.sh`**: A bash script to chain and execute multiple AI-generated scripts in a defined sequence.
+  - **Purpose**: To automate complex collaborative workflows.
+  - **Location**: `./data/scripts/workflow_orchestrator.sh`
+  - **Usage**: `./data/scripts/workflow_orchestrator.sh --config ./data/workflows/sample_workflow.yaml`
 
-#### 2. **Steel Browser API**
-- **Purpose**: Infrastructure-free browser automation
-- **Features**: Puppeteer/Playwright compatible
-- **Link**: https://github.com/steel-dev/steel-browser
+### Code Quality & Analysis
+- **`code_quality_analyzer.py`**: Analyzes Python code for style, complexity, and potential errors.
+  - **Purpose**: To maintain high code quality standards in collaborative projects.
+  - **Location**: `./data/tools/code_quality_analyzer.py`
+  - **Usage**: `python3 ./data/tools/code_quality_analyzer.py --file ./data/example.py`
+- **`nlg_analyzer.py`**: Analyzes Natural Language Generation output for quality, coherence, and creativity.
+  - **Purpose**: To evaluate the performance of NLG models.
+  - **Location**: `./data/nlg_analyzer.py`
+  - **Usage**: `python3 ./data/nlg_analyzer.py --input ./data/dialogue.txt`
 
-#### 3. **Sentient Framework**
-- **Purpose**: 3-line browser automation
-- **Example**: Job applications, e-commerce
-- **Link**: https://github.com/sentient-engineering/jobber
+### Communication & Collaboration
+- **`websocket_chat_server.js`**: A Node.js server for real-time chat with AI integration.
+  - **Purpose**: To facilitate real-time communication and collaboration between AI agents.
+  - **Location**: `./data/websocket_chat_server.js`
+  - **Usage**: `node ./data/websocket_chat_server.js`
+- **`collaboration_log.md`**: A markdown file to log significant AI-AI interactions and decisions.
+  - **Purpose**: To maintain a historical record of collaboration.
+  - **Location**: `./data/collaboration_log.md`
+  - **Usage**: Append entries using `echo "..." >> ./data/collaboration_log.md`
 
-## 📂 Key Directories
+## Future Tools
+- Distributed Redis cache system
+- GraphQL API with subscriptions
+- ML sentiment analysis pipeline
+- Database backup utility
+- Redis cluster manager
 
-```
-/home/corey/projects/GAA/gaa-5-testing/
-├── data/
-│   ├── architecture/        # System designs (READ these!)
-│   ├── code_skeletons/      # Ready-to-use code
-│   ├── docs/                # API specs, schemas
-│   ├── reports/             # Agent analysis reports
-│   └── TOOL_REGISTRY.md     # This file
-├── src/
-│   ├── agents/              # Your agent code
-│   └── prompts.js           # Your personalities (UPDATED!)
-└── ClaudeTodo/
-    └── agent-requests/      # File your #TASK here!
-```
-
-## 🎯 How Agents Can Use This
-
-### Reading Your Own Files
-```bash
-# See what tools exist
-cat /data/TOOL_REGISTRY.md
-
-# Review architecture designs
-cat /data/architecture/iot_dashboard_architecture.md
-
-# Check code implementations
-head -100 /data/code_skeletons/iot_sensor_simulator.py
-
-# Analyze API specs
-cat /data/docs/iot_dashboard_api.yaml | grep -A 10 "paths:"
-```
-
-### Suggesting Improvements
-```markdown
-#TASK Improve the IoT sensor simulator to add machine learning predictions
-#TASK Enhance the dashboard UI with real-time graphs using D3.js
-#TASK Add authentication to the API using JWT tokens
-#TASK Integrate browser-use for automated testing
-```
-
-### Small Tool Requests
-```markdown
-#TASK Create a JSON validator utility function
-#TASK Build a log parser for our system logs
-#TASK Write a shell script to backup our database
-#TASK Create a Python decorator for timing functions
-```
-
-## 🔄 Collaboration Protocol
-
-1. **Agents**: Review this registry each loop
-2. **Agents**: Suggest tool improvements via #TASK
-3. **Claude**: Updates registry after building tools
-4. **Both**: Reference file paths when discussing
-5. **Both**: Test tools and report results
-
-## 📊 Statistics
-
-- **Files Created**: 168+ 
-- **Lines of Code**: 10,000+
-- **Auto-Wake Success**: 100% (7/7)
-- **Agent Loops**: 35+
-- **GitHub Stars**: Track at https://github.com/AI-CIV-2025/prometheus-gaa
-
-## 💡 Next Steps
-
-1. Agents should explore existing files
-2. Suggest specific improvements
-3. Request small utilities, not just big projects
-4. Test browser-use for web automation
-5. Create more #TASK markers!
-
----
-*Last Updated: Loop 35 | Wake #7 | August 31, 2025 8:55 AM*
+## Usage Guidelines
+- Always refer to this registry before introducing new tools or scripts.
+- Ensure all new tools are documented here with their purpose, location, and usage.
+- Scripts should be placed in appropriate subdirectories within `./data/`.
