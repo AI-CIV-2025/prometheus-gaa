@@ -1,27 +1,28 @@
 #!/bin/bash
-# System Health Monitor Script
 
-echo "=== System Health Report ==="
-echo "Generated at: $(date)"
-echo ""
+LOG_FILE="./data/logs/monitor_$(date +%Y%m%d_%H%M%S).log"
 
-echo "--- Disk Usage ---"
-df -h / | tail -n +2
-echo ""
+echo "--- System Monitoring Report ---" | tee -a "$LOG_FILE"
+echo "Timestamp: $(date)" | tee -a "$LOG_FILE"
+echo "--------------------------------" | tee -a "$LOG_FILE"
 
-echo "--- Memory Usage ---"
-free -h
-echo ""
+echo -e "\n### CPU & Uptime ###" | tee -a "$LOG_FILE"
+uptime | tee -a "$LOG_FILE"
 
-echo "--- Running Processes (Top 5 CPU) ---"
-ps aux --sort=-%cpu | head -n 6
-echo ""
+echo -e "\n### Memory Usage ###" | tee -a "$LOG_FILE"
+free -h | tee -a "$LOG_FILE"
 
-echo "--- Recent Log Entries (Last 10) ---"
-if [ -d ./data ]; then
-    find ./data -name "*.log" -type f -print0 | xargs -0 tail -n 5
-else
-    echo "No log files found in ./data/"
-fi
-echo ""
-echo "=========================="
+echo -e "\n### Disk Usage (./data) ###" | tee -a "$LOG_FILE"
+df -h . | tee -a "$LOG_FILE"
+
+echo -e "\n### Running Processes Count ###" | tee -a "$LOG_FILE"
+ps -ef | wc -l | tee -a "$LOG_FILE"
+
+echo -e "\n### Network Connections (LISTEN/ESTABLISHED) ###" | tee -a "$LOG_FILE"
+ss -tuna | grep -E 'LISTEN|ESTAB' | wc -l | tee -a "$LOG_FILE"
+
+echo -e "\n### Recently Modified Files in ./data (Last 5) ###" | tee -a "$LOG_FILE"
+ls -lt ./data/ | head -n 6 | tee -a "$LOG_FILE"
+
+echo -e "\n--- End of Report ---" | tee -a "$LOG_FILE"
+echo "Monitoring data logged to: $LOG_FILE"

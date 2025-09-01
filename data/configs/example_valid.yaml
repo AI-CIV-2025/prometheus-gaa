@@ -1,0 +1,11 @@
+
+# This is a valid YAML configuration
+
+database:
+  host: localhost
+  port: 5432
+  username: admin
+
+api:
+  version: v1
+  timeout: 30

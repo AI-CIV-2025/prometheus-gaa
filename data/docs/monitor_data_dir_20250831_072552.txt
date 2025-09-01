@@ -1,0 +1,28 @@
+--- Data Directory Monitoring Report ---
+Generated: Sun Aug 31 07:25:52 EDT 2025
+Execution Path: ./data
+
+## 1. Disk Usage of ./data
+7.2M	./data
+
+## 2. File Count by Type in ./data
+- Total files: 65
+- Markdown files (.md): 32
+- Shell scripts (.sh): 16
+- Log files (.log): 4
+- JSON files (.json): 0
+- Text files (.txt): 7
+
+## 3. Recently Modified Files (Top 5)
+total 7044
+drwxr-xr-x 2 corey corey    4096 Aug 31 07:25 reports
+drwxr-xr-x 2 corey corey    4096 Aug 31 07:25 tools
+-rw-r--r-- 1 corey corey   32768 Aug 31 07:25 gaa.db-shm
+-rw-r--r-- 1 corey corey 4161232 Aug 31 07:25 gaa.db-wal
+drwxr-xr-x 2 corey corey    4096 Aug 31 07:24 knowledge
+
+## 4. Status of exec_policy.json
+exec_policy.json: Present
+File size: 8.0K
+
+--- End of Report ---

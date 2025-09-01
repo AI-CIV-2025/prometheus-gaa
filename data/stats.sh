@@ -1,42 +1,36 @@
 #!/bin/bash
-echo "=== AI Collaboration System Statistics ==="
-echo "Generated on: $(date)"
+echo "=== GAA-4.0 Execution Statistics ==="
+echo "Generated: $(date)"
 echo ""
-
-echo "--- File System Overview ---"
-echo "Total files in ./data/: $(ls -1 ./data/ 2>/dev/null | wc -l)"
-echo "  - Log files (*.log): $(ls -1 ./data/*.log 2>/dev/null | wc -l)"
-echo "  - JSON files (*.json): $(ls -1 ./data/*.json 2>/dev/null | wc -l)"
-echo "  - Markdown files (*.md): $(ls -1 ./data/*.md 2>/dev/null | wc -l)"
-echo "  - Python scripts (*.py): $(ls -1 ./data/*.py 2>/dev/null | wc -l)"
-echo "  - Shell scripts (*.sh): $(ls -1 ./data/*.sh 2>/dev/null | wc -l)"
-echo "  - Node.js scripts (*.js): $(ls -1 ./data/*.js 2>/dev/null | wc -l)"
+echo "File Statistics:"
+echo "- Total files in data/: $(ls -1 ./data/ 2>/dev/null | wc -l)"
+echo "- Log files: $(ls -1 ./data/*.log 2>/dev/null | wc -l)"
+echo "- JSON files: $(ls -1 ./data/*.json 2>/dev/null | wc -l)"
+echo "- Text files: $(ls -1 ./data/*.txt 2>/dev/null | wc -l)"
+echo "- Markdown files: $(ls -1 ./data/*.md 2>/dev/null | wc -l)"
+echo "- Shell scripts: $(ls -1 ./data/*.sh 2>/dev/null | wc -l)"
 echo ""
-
-echo "--- Task Management Status ---"
-if [[ -f ./data/tasks.json ]]; then
-    TOTAL_TASKS=$(jq 'length' ./data/tasks.json)
-    PENDING_TASKS=$(jq '[.[] | select(.status == "pending")] | length' ./data/tasks.json)
-    IN_PROGRESS_TASKS=$(jq '[.[] | select(.status == "in_progress")] | length' ./data/tasks.json)
-    COMPLETED_TASKS=$(jq '[.[] | select(.status == "completed")] | length' ./data/tasks.json)
-    FAILED_TASKS=$(jq '[.[] | select(.status == "failed")] | length' ./data/tasks.json)
-    echo "Total tasks: $TOTAL_TASKS"
-    echo "  - Pending: $PENDING_TASKS"
-    echo "  - In Progress: $IN_PROGRESS_TASKS"
-    echo "  - Completed: $COMPLETED_TASKS"
-    echo "  - Failed: $FAILED_TASKS"
+echo "Recent Activity (last 10 files):"
+ls -lt ./data/ 2>/dev/null | head -10 | sed 's/^/  /'
+echo ""
+echo "--- System Health Placeholder Status ---"
+if [ -f "./data/tools/system_health_check.sh" ]; then
+  echo "  system_health_check.sh: Exists"
 else
-    echo "No tasks.json found. Task management not initialized."
+  echo "  system_health_check.sh: Missing"
 fi
-echo ""
-
-echo "--- Recent Activity (Last 5 Files Modified) ---"
-ls -lt --time-style=long-iso ./data/ | head -n 6 | tail -n 5
-echo ""
-
-echo "--- System Health ---"
-echo "Disk Usage:"
-df -h . | tail -n 1 | awk '{print "  - Available: " $4 ", Capacity: " $5}'
-echo "Uptime: $(uptime -p)"
-echo ""
-echo "=============================================="
+if [ -f "./data/tools/analyze_logs.sh" ]; then
+  echo "  analyze_logs.sh: Exists"
+else
+  echo "  analyze_logs.sh: Missing"
+fi
+if [ -f "./data/tools/monitor_data_activity.sh" ]; then
+  echo "  monitor_data_activity.sh: Exists"
+else
+  echo "  monitor_data_activity.sh: Missing"
+fi
+if [ -f "./data/tools/generate_report.sh" ]; then
+  echo "  generate_report.sh: Exists"
+else
+  echo "  generate_report.sh: Missing"
+fi

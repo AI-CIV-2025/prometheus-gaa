@@ -1,0 +1,9 @@
+# This is a valid YAML file
+name: Example Project
+version: 1.0
+settings:
+  timeout: 30
+  retries: 5
+dependencies:
+  - packageA
+  - packageB

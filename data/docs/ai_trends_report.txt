@@ -1,0 +1,1 @@
+This script will use Claude to search for the latest AI developments and create a report.

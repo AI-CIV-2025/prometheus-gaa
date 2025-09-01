@@ -1,0 +1,4 @@
+{
+  "allowed_commands": ["echo", "ls", "cat", "find", "grep", "tree", "touch", "mkdir", "chmod", "python3", "bash"],
+  "allow_net": false
+}

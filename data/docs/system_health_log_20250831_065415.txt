@@ -1,0 +1,31 @@
+=== System Health Report ===
+Report Timestamp: Sun Aug 31 06:54:15 EDT 2025
+Execution Path: ./data
+
+--- File System Metrics ---
+Total files in data/: 8
+Markdown files: 0
+Script files: 9
+Log files: 2
+JSON config files: 0
+Available Disk Space (./data):
+  Total: 1007G, Used: 362G, Avail: 595G, Use%: 38%
+
+--- System Uptime & Load ---
+System Uptime: 5:39 1
+Current Load Average (1, 5, 15 min):  1.20, 0.91, 0.80
+
+--- Memory Usage ---
+Memory Stats (Total, Used, Free):
+  Total: 7.6Gi, Used: 3.2Gi, Free: 3.8Gi
+
+--- Process Statistics ---
+Total running processes: 69
+
+--- Recent Activity (Last 5 files in ./data) ---
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:54 reports
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:54 tools
+-rw-r--r-- 1 corey corey 4136512 Aug 31 06:54 gaa.db-wal
+-rw-r--r-- 1 corey corey   32768 Aug 31 06:54 gaa.db-shm
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:50 knowledge
+=== End of Report ===

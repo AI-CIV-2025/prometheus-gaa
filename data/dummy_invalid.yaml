@@ -1,0 +1,9 @@
+# This is an invalid YAML file (missing colon after key)
+name Example Project
+version: 1.0
+settings:
+  timeout: 30
+  retries: 5
+dependencies:
+  - packageA
+  - packageB

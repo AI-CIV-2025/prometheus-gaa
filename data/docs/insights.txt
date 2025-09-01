@@ -1,0 +1,6 @@
+Cryptocurrency Data Insights
+=============================
+File: ./data/btc_eth_data_20250831.csv
+Average Price: 
+Maximum Price: 
+Minimum Price: 

@@ -1,0 +1,1 @@
+This script will use Claude to research best practices for Kubernetes in 2025 and document them.

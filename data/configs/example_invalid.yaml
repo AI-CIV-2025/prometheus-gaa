@@ -1,0 +1,9 @@
+
+# This is an invalid YAML configuration
+
+user:
+name: "Test User"
+ invalid_indentation: true # Incorrect indentation
+
+settings:
+  enabled: false

@@ -1,0 +1,5 @@
+system:
+  name: GAA
+  version: 1.0
+logging_level: INFO
+  extra_indent: true # Incorrect indentation

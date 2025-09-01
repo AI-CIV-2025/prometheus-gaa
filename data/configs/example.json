@@ -1,0 +1,5 @@
+{
+  "api_key": "YOUR_API_KEY",
+  "timeout": 30,
+  "log_level": "INFO"
+}

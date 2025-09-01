@@ -1,0 +1,5 @@
+api_key: "dummy_key_123"
+timeout: 30
+features:
+  - logging
+  - monitoring

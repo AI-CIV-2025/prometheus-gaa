@@ -1,0 +1,6 @@
+total 20
+drwxr-xr-x  2 corey corey  4096 Aug 31 12:00 .
+drwxr-xr-x 34 corey corey 12288 Aug 31 12:00 ..
+-rw-r--r--  1 corey corey     0 Aug 31 12:00 test_file_moved.txt
+-rwxr-xr-x  1 corey corey   590 Aug 31 12:00 test_file_operations.sh
+-rw-r--r--  1 corey corey     0 Aug 31 12:00 test_results.txt

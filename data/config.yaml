@@ -1,0 +1,8 @@
+# Example Configuration
+database:
+  host: localhost
+  port: 5432
+
+api_keys:
+  service_a: abc123xyz
+  service_b: def456uvw

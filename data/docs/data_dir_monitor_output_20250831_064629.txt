@@ -1,0 +1,33 @@
+=== Data Directory Activity Report ===
+Generated: Sun Aug 31 06:46:29 EDT 2025
+Monitoring Path: ./data
+
+--- Directory Structure ---
+- knowledge (directory)
+- projects (directory)
+- reports (directory)
+- tools (directory)
+
+--- File Type Summary (in ./data/ and subdirectories) ---
+- Total files: 22
+- Markdown files (*.md): 7
+- Shell scripts (*.sh): 6
+- JSON files (*.json): 0
+- Log files (*.log): 1
+- Other files: 8
+
+--- Top 10 Recently Modified Files ---
+total 6036
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:46 reports
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:46 tools
+-rw-r--r-- 1 corey corey   32768 Aug 31 06:46 gaa.db-shm
+-rw-r--r-- 1 corey corey 4136512 Aug 31 06:46 gaa.db-wal
+drwxr-xr-x 2 corey corey    4096 Aug 31 06:43 knowledge
+drwxr-xr-x 3 corey corey    4096 Aug 31 06:43 projects
+-rw-r--r-- 1 corey corey 1990656 Aug 31 06:36 gaa.db
+-rw-r--r-- 1 corey corey     515 Aug 28 05:55 system_status_report.txt
+
+--- Disk Usage of ./data/ ---
+6.0M	./data/
+
+--- End of Report ---
