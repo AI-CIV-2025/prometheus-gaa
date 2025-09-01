@@ -76,3 +76,38 @@ data/knowledge/*
 # Session-specific files
 data/gaa.db*
 sessions/
+
+# Large files (>25MB)
+*.zip
+*.tar.gz
+*.tar
+*.gz
+ALL_AGENT_OUTPUT_*.txt
+**/ALL_AGENT_OUTPUT*.txt
+**/*.log.old
+# Specific large files from this session
+ALL_AGENT_OUTPUT_AUG31.txt
+/home/corey/projects/GAA/gaa-5-testing/ALL_AGENT_OUTPUT_AUG31.txt
+# Any file over 25MB
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.iso
+*.dmg
+# Large data files
+data/*.csv
+data/*.json
+!data/exec_policy.json
+# Python packages installed by agents
+data/yaml/
+data/_yaml/
+data/PyYAML*/
+data/**/__pycache__/
+data/**/*.pyc
+data/**/*.pyo
+data/**/*.pyd
+data/**/*.so
+# Large concatenated files
+*_CONCATENATED.txt
+*_FULL_OUTPUT.txt
